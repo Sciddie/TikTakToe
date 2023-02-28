@@ -13,9 +13,8 @@
     for (let i = 0; i<16;i++) {
       gamegridRender.push({label: i+1, imagePosition: "-" + String((i*100)%400) + "px " + "-" + String(Math.floor(i/4)*100) + "px"})
     }
-    console.log(gamegridRender)
     return {
-      gamegrid: gamegridRender,
+      gamegrid: gamegridRender.shuffle(),
       running: true,
       winningText: "Das Spiel läuft noch!"
     }
