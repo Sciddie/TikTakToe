@@ -76,6 +76,7 @@
     width: 100px;
     font-size: 35px;
     font-weight: bold;
+    color: white;
   }
   .empty-button {
     background-color: transparent;
@@ -83,7 +84,7 @@
     color: transparent;
   }
   .correct-button {
-    background-color: #2cc507;
+    color: #2cc507;
   }
   .reset-btn {
     width: 400px;
