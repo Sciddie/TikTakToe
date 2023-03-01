@@ -20,7 +20,8 @@ Object.defineProperty(Array.prototype, 'shuffle', {
       gamegrid: gamegridRender.shuffle(),
       running: true,
       winningText: "Das Spiel läuft noch!",
-      pictureUrl: ''
+      pictureUrl: '',
+      scaling: '400px 400px'
     }
   }
   export default {
@@ -28,14 +29,23 @@ Object.defineProperty(Array.prototype, 'shuffle', {
       return initialState()
     },
     mounted() {
+      const makeScailingVaqlues = (height, width) => {
+        if (height > width) {
+          let scalingVal = height/width
+          this.scaling = "400px " + String(400*scalingVal) + "px"
+        } else {
+          let scalingVal = width/height
+          this.scaling = String(400*scalingVal) + "px 400px"
+        }
+      }
       console.log("Component mounted!")
       axios
           .get('https://api.thecatapi.com/v1/images/search')
           .then((response) => {
             console.log(response)
             console.log(response.data[0].url)
-            console.log(this)
             this.pictureUrl = response.data[0].url
+            makeScailingVaqlues(response.data[0].height, response.data[0].width)
           })
     },
     methods: {
@@ -44,7 +54,6 @@ Object.defineProperty(Array.prototype, 'shuffle', {
         return field === this.gamegrid.findIndex(e => e.label === field) +1
       },
       fieldPressed(field) {
-        console.log(pictureUrl)
         if (!(this.running)) return
         if (this.gamegrid[field].label === 16) return
         let emptyIndex = this.gamegrid.findIndex(e => e.label === 16)
@@ -65,6 +74,9 @@ Object.defineProperty(Array.prototype, 'shuffle', {
       isEmpty(field) {
         return this.gamegrid[field].label === 16
       },
+      isRunning() {
+        return this.running
+      },
       reset() {
         Object.assign(this.$data, initialState())
       }
@@ -76,7 +88,7 @@ Object.defineProperty(Array.prototype, 'shuffle', {
   <p class="winning-text">{{winningText}}</p>
   <div class="gamegrid">
     <div v-for="field in 16" class="inline-block">
-      <button class="gamegrid-button" :class="{'correct-button' : isNumberCorrect(field), 'empty-button' : gamegrid[field-1].label===16, 'no-font' : isNoNums}" :style="{'background-image': isEmpty(field-1) ? 'none' : 'url(' + this.pictureUrl + ')', 'background-position':  this.gamegrid[field-1].imagePosition}" @click="fieldPressed(field-1)" >{{gamegrid[field-1].label}}</button>
+      <button class="gamegrid-button resize-image-400" :class="{'correct-button' : isNumberCorrect(field), 'empty-button' : gamegrid[field-1].label===16, 'no-font' : isNoNums}" :style="{'margin' : isRunning() ? '5px' : '0px','background-image': isEmpty(field-1) ? 'none' : 'url(' + this.pictureUrl + ')', 'background-position':  this.gamegrid[field-1].imagePosition}" @click="fieldPressed(field-1)" >{{gamegrid[field-1].label}}</button>
       <br v-if="field % 4 === 0"/>
     </div>
   </div>
@@ -122,6 +134,9 @@ Object.defineProperty(Array.prototype, 'shuffle', {
   }
   #visible-numbers-checkbox {
     margin: 10px 10px 10px 10px;
+  }
+  .resize-image-400 {
+    background-size: v-bind(scaling);
   }
 </style>
 <style scoped>
