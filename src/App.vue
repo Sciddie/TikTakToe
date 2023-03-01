@@ -79,6 +79,24 @@ Object.defineProperty(Array.prototype, 'shuffle', {
       },
       reset() {
         Object.assign(this.$data, initialState())
+        const makeScailingVaqlues = (height, width) => {
+          if (height > width) {
+            let scalingVal = height/width
+            this.scaling = "400px " + String(400*scalingVal) + "px"
+          } else {
+            let scalingVal = width/height
+            this.scaling = String(400*scalingVal) + "px 400px"
+          }
+        }
+        console.log("Component mounted!")
+        axios
+            .get('https://api.thecatapi.com/v1/images/search')
+            .then((response) => {
+              console.log(response)
+              console.log(response.data[0].url)
+              this.pictureUrl = response.data[0].url
+              makeScailingVaqlues(response.data[0].height, response.data[0].width)
+            })
       }
     },
   }
