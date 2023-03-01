@@ -14,6 +14,7 @@
       gamegridRender.push({label: i+1, imagePosition: "-" + String((i*100)%400) + "px " + "-" + String(Math.floor(i/4)*100) + "px"})
     }
     return {
+      isNoNums: true,
       gamegrid: gamegridRender.shuffle(),
       running: true,
       winningText: "Das Spiel läuft noch!"
@@ -60,10 +61,12 @@
   <p class="winning-text">{{winningText}}</p>
   <div class="gamegrid">
     <div v-for="field in 16" class="inline-block">
-      <button class="gamegrid-button" :class="{'correct-button' : isNumberCorrect(field), 'empty-button' : gamegrid[field-1].label===16}" :style="{'background-image': isEmpty(field-1) ? 'none' : 'url(\'https://cdn2.thecatapi.com/images/3tv.jpg\')', 'background-position':  this.gamegrid[field-1].imagePosition}" @click="fieldPressed(field-1)" >{{gamegrid[field-1].label}}</button>
+      <button class="gamegrid-button" :class="{'correct-button' : isNumberCorrect(field), 'empty-button' : gamegrid[field-1].label===16, 'no-font' : isNoNums}" :style="{'background-image': isEmpty(field-1) ? 'none' : 'url(\'https://cdn2.thecatapi.com/images/3tv.jpg\')', 'background-position':  this.gamegrid[field-1].imagePosition}" @click="fieldPressed(field-1)" >{{gamegrid[field-1].label}}</button>
       <br v-if="field % 4 === 0"/>
     </div>
   </div>
+  <input id="visible-numbers-checkbox" type="checkbox" @change="event => isNoNums = !event.target.checked">
+  <label for="visible-numbers-checkbox">Zahlen sichtbar machen</label><br>
   <button class="reset-btn" @click="reset()">Reset</button>
 </template>
 
@@ -78,6 +81,7 @@
     font-weight: bold;
     color: white;
   }
+
   .empty-button {
     background-color: transparent;
     border: none;
@@ -92,12 +96,17 @@
     font-size: 35px;
   }
   .gamegrid {
-    margin-bottom: 10px;
   }
   .winning-text {
     font-family: Arial;
     font-weight: bold;
     font-size: 35px;
+  }
+  .no-font {
+    color: transparent;
+  }
+  #visible-numbers-checkbox {
+    margin: 10px 10px 10px 10px;
   }
 </style>
 <style scoped>
