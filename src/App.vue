@@ -1,5 +1,7 @@
 <script>
-  Object.defineProperty(Array.prototype, 'shuffle', {
+import axios from "axios";
+
+Object.defineProperty(Array.prototype, 'shuffle', {
     value: function() {
       for (let i = this.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -17,12 +19,24 @@
       isNoNums: true,
       gamegrid: gamegridRender.shuffle(),
       running: true,
-      winningText: "Das Spiel läuft noch!"
+      winningText: "Das Spiel läuft noch!",
+      pictureUrl: ''
     }
   }
   export default {
     data() {
       return initialState()
+    },
+    mounted() {
+      console.log("Component mounted!")
+      axios
+          .get('https://api.thecatapi.com/v1/images/search')
+          .then((response) => {
+            console.log(response)
+            console.log(response.data[0].url)
+            console.log(this)
+            this.pictureUrl = response.data[0].url
+          })
     },
     methods: {
       isNumberCorrect(field) {
@@ -30,6 +44,7 @@
         return field === this.gamegrid.findIndex(e => e.label === field) +1
       },
       fieldPressed(field) {
+        console.log(pictureUrl)
         if (!(this.running)) return
         if (this.gamegrid[field].label === 16) return
         let emptyIndex = this.gamegrid.findIndex(e => e.label === 16)
@@ -53,7 +68,7 @@
       reset() {
         Object.assign(this.$data, initialState())
       }
-    }
+    },
   }
 </script>
 
@@ -61,7 +76,7 @@
   <p class="winning-text">{{winningText}}</p>
   <div class="gamegrid">
     <div v-for="field in 16" class="inline-block">
-      <button class="gamegrid-button" :class="{'correct-button' : isNumberCorrect(field), 'empty-button' : gamegrid[field-1].label===16, 'no-font' : isNoNums}" :style="{'background-image': isEmpty(field-1) ? 'none' : 'url(\'https://cdn2.thecatapi.com/images/3tv.jpg\')', 'background-position':  this.gamegrid[field-1].imagePosition}" @click="fieldPressed(field-1)" >{{gamegrid[field-1].label}}</button>
+      <button class="gamegrid-button" :class="{'correct-button' : isNumberCorrect(field), 'empty-button' : gamegrid[field-1].label===16, 'no-font' : isNoNums}" :style="{'background-image': isEmpty(field-1) ? 'none' : 'url(' + this.pictureUrl + ')', 'background-position':  this.gamegrid[field-1].imagePosition}" @click="fieldPressed(field-1)" >{{gamegrid[field-1].label}}</button>
       <br v-if="field % 4 === 0"/>
     </div>
   </div>
