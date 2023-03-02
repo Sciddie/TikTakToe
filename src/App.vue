@@ -15,9 +15,22 @@ Object.defineProperty(Array.prototype, 'shuffle', {
     for (let i = 0; i<16;i++) {
       gamegridRender.push({label: i+1, imagePosition: "-" + String((i*100)%400) + "px " + "-" + String(Math.floor(i/4)*100) + "px"})
     }
+    while(true) {
+      gamegridRender.shuffle()
+      let richtig = 0
+      for (let i in gamegridRender) {
+        if (gamegridRender[i].label === Number(i)+1) {
+          richtig = richtig + 1
+        }
+      }
+      console.log(richtig)
+      if (richtig%2===0) {
+        break
+      }
+    }
     return {
       isNoNums: true,
-      gamegrid: gamegridRender.shuffle(),
+      gamegrid: gamegridRender,
       running: true,
       winningText: "Das Spiel läuft noch!",
       pictureUrl: '',
@@ -50,7 +63,7 @@ Object.defineProperty(Array.prototype, 'shuffle', {
     },
     methods: {
       isNumberCorrect(field) {
-        if (field == 16) {return false}
+        if (field === 16) {return false}
         return field === this.gamegrid.findIndex(e => e.label === field) +1
       },
       fieldPressed(field) {
