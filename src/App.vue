@@ -18,8 +18,8 @@ Object.defineProperty(Array.prototype, 'shuffle', {
     while(true) {
       gamegridRender.shuffle()
       let richtig = 0
-      for (let i in gamegridRender) {
-        if (gamegridRender[i].label === Number(i)+1) {
+      for (let i =0;i < gamegridRender.length;i++) {
+        if (gamegridRender[i].label === i+1) {
           richtig = richtig + 1
         }
       }
